@@ -161,7 +161,7 @@ alias ls='eza --icons'
 alias ll='eza -la --icons'
 alias cat='bat'
 alias z='zoxide'
-
+alias clr='clear'
 # fzf integration
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
