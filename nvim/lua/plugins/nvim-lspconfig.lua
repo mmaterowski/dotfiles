@@ -19,7 +19,13 @@ return {
           },
         },
         -- Angular Language Server
-        angularls = {},
+        angularls = {
+          filetypes = { "typescript", "html", "typescriptreact", "typescript.tsx", "htmlangular" },
+        },
+        -- HTML Language Server
+        html = {
+          filetypes = { "html", "htmlangular" },
+        },
         -- GraphQL
         graphql = {
           filetypes = { "graphql", "gql" },
