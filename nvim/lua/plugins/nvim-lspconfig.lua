@@ -1,34 +1,53 @@
 return {
-  "neovim/nvim-lspconfig",
-  opts = function(_, opts)
-    -- Set up angularls server config
-    opts.servers = opts.servers or {}
-    opts.servers.angularls = {}
-
-    -- Set up ESLint
-    opts.servers.eslint = {
-      settings = {
-        format = { enable = true },
-        autoFixOnSave = true,
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        -- TypeScript/Angular
+        ts_ls = {
+          settings = {
+            typescript = {
+              format = {
+                enable = false, -- Use ESLint for formatting
+              },
+            },
+            javascript = {
+              format = {
+                enable = false,
+              },
+            },
+          },
+        },
+        -- Angular Language Server
+        angularls = {
+          filetypes = { "typescript", "html", "typescriptreact", "typescript.tsx", "htmlangular" },
+        },
+        -- HTML Language Server
+        html = {
+          filetypes = { "html", "htmlangular" },
+        },
+        -- GraphQL
+        graphql = {
+          filetypes = { "graphql", "gql" },
+        },
+        -- SCSS/CSS
+        cssls = {
+          settings = {
+            css = {
+              validate = true,
+              lint = {
+                unknownAtRules = "ignore",
+              },
+            },
+            scss = {
+              validate = true,
+              lint = {
+                unknownAtRules = "ignore",
+              },
+            },
+          },
+        },
       },
-    }
-
-    -- Set up angularls-specific setup function
-    opts.setup = opts.setup or {}
-    opts.setup.angularls = function()
-      Snacks.util.lsp.on({ name = "angularls" }, function(_, client)
-        --HACK: disable angular renaming capability due to duplicate rename popping up
-        client.server_capabilities.renameProvider = false
-      end)
-    end
-
-    -- Extend vtsls config with Angular plugin
-    LazyVim.extend(opts.servers.vtsls, "settings.vtsls.tsserver.globalPlugins", {
-      {
-        name = "@angular/language-server",
-        location = LazyVim.get_pkg_path("angular-language-server", "/node_modules/@angular/language-server"),
-        enableForWorkspaceTypeScriptVersions = false,
-      },
-    })
-  end,
+    },
+  },
 }
