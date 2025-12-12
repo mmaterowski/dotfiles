@@ -116,7 +116,7 @@ ytmp3() {
 
 # Download YouTube video as MP4 to Downloads folder with title-based name
 ytmp4() {
-  yt-dlp -f mp4 -o "$HOME/Downloads/%(title)s.%(ext)s" "$1"
+  yt-dlp -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" -o "$HOME/Downloads/%(title)s.%(ext)s" "$1"
 }
 
 whisper-transcribe() {
