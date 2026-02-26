@@ -7,6 +7,9 @@ ln -sf ~/dotfiles/.zshrc ~/.zshrc
 mkdir -p ~/.config
 ln -sf ~/dotfiles/nvim ~/.config/nvim
 
+# Symlink kitty config
+ln -sf ~/dotfiles/kitty ~/.config/kitty
+
 echo "Dotfiles installed!"
 
 # Install Oh My Zsh
