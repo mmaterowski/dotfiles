@@ -81,6 +81,11 @@ plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
+# Vi mode (must be after oh-my-zsh to avoid override)
+bindkey -v
+KEYTIMEOUT=1
+
+
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -148,12 +153,7 @@ list-zshrc-functions() {
     }
   ' ~/.zshrc
 }
-eval "$(starship init zsh)"
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# Starship prompt
-eval "$(starship init zsh)"
 
 # Better cd
 eval "$(zoxide init zsh)"
@@ -187,3 +187,7 @@ source ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting/zsh-sy
 
 # Load Angular CLI autocompletion.
 source <(ng completion script)
+export PATH="$PATH:/Users/Michal.Materowski/openviking-venv/bin:$HOME/bin"
+export OPENVIKING_CONFIG_FILE=~/.openviking/ov.conf
+export OPENVIKING_CLI_CONFIG_FILE=~/.openviking/ovcli.conf
+export PATH="$HOME/.local/bin:$PATH"

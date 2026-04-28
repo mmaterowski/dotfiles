@@ -20,6 +20,10 @@ return {
       "job",
     },
   },
+  config = function(_, opts)
+    require("overseer").setup(opts)
+    require("user.overseer_tasks")
+  end,
   keys = {
     { "<leader>ct", "<cmd>OverseerRun<cr>", desc = "Run task" },
     { "<leader>cT", "<cmd>OverseerToggle<cr>", desc = "Toggle tasks" },
