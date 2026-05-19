@@ -33,4 +33,8 @@ brew install eza
 
 echo "Fuzzy finding"
 brew install fzf
+
+echo "Matrix"
+brew install cmatrix
+
 $(brew --prefix)/opt/fzf/install

@@ -153,7 +153,6 @@ list-zshrc-functions() {
     }
   ' ~/.zshrc
 }
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Better cd
 eval "$(zoxide init zsh)"
@@ -178,7 +177,17 @@ SAVEHIST=10000
 
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Lazy load nvm
+nvm() {
+  unset -f nvm node npm npx nx
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  nvm "$@"
+}
+node() { nvm; node "$@"; }
+npm()  { nvm; npm "$@"; }
+npx()  { nvm; npx "$@"; }
+nx()   { nvm; nx "$@"; }
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -187,6 +196,13 @@ source ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting/zsh-sy
 
 # Load Angular CLI autocompletion.
 source <(ng completion script)
+
+# With this:
+ng() {
+  unset -f ng
+  source <(command ng completion script)
+  ng "$@"
+}
 export PATH="$PATH:/Users/Michal.Materowski/openviking-venv/bin:$HOME/bin"
 export OPENVIKING_CONFIG_FILE=~/.openviking/ov.conf
 export OPENVIKING_CLI_CONFIG_FILE=~/.openviking/ovcli.conf
