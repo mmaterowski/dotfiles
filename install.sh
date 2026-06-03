@@ -36,5 +36,6 @@ brew install fzf
 
 echo "Matrix"
 brew install cmatrix
-
+echo "Btop"
+brew install btop
 $(brew --prefix)/opt/fzf/install
