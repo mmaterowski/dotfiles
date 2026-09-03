@@ -20,9 +20,44 @@ return {
             end
           end
         end,
+        vtsls = function(_, opts)
+          opts.settings.javascript =
+            vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
+        end,
       },
       servers = {
         -- TypeScript/Angular
+        vtsls = {
+          settings = {
+            vtsls = {
+              autoUseWorkspaceTsdk = true,
+            },
+            typescript = {
+              updateImportsOnFileMove = { enabled = "always" },
+              suggest = {
+                completeFunctionCalls = true,
+              },
+              inlayHints = {
+                enumMemberValues = { enabled = true },
+                functionLikeReturnTypes = { enabled = true },
+                parameterNames = { enabled = "literals" },
+                parameterTypes = { enabled = true },
+                propertyDeclarationTypes = { enabled = true },
+                variableTypes = { enabled = false },
+              },
+            },
+          },
+        },
+        tsserver = {
+          globalPlugins = {
+            {
+              name = "@angular/language-server",
+              location = require("mason-registry").get_package("angular-language-server"):get_install_path()
+                .. "/node_modules/@angular/language-server",
+              enableForWorkspaceTypeScriptVersions = false,
+            },
+          },
+        },
         ts_ls = {
           settings = {
             typescript = {

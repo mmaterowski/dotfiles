@@ -39,3 +39,9 @@ brew install cmatrix
 echo "Btop"
 brew install btop
 $(brew --prefix)/opt/fzf/install
+
+git config --global merge.tool diffview
+git config --global mergetool.diffview.cmd \
+  'nvim -n -c "DiffviewOpen"'
+git config --global mergetool.prompt false
+git config --global mergetool.keepBackup false
