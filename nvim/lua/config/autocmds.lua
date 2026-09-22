@@ -20,6 +20,17 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
+vim.filetype.add({
+  extension = {
+    gd = "gdscript",
+    tscn = "gdresource",
+    tres = "gdresource",
+    godot = "gdproject",
+    gdshader = "gdshader",
+    shader = "gdshader",
+  },
+})
+
 vim.api.nvim_create_autocmd("BufEnter", {
   pattern = "*",
   callback = function()
