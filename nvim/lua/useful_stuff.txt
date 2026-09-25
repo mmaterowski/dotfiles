@@ -1,0 +1,7 @@
+Just clear damn nvim
+
+rm -rf ~/.local/share/nvim/*
+rm -rf ~/.local/state/nvim/*
+find ~/.local/share/nvim/ -name "*.luac" -delete
+find ~/.local/share/nvim/ -name "__pycache__" -exec rm -rf {} +
+rm -rf /tmp/nvim* ~/.cache/nvim

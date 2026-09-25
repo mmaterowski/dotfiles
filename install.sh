@@ -7,7 +7,7 @@ ln -sf ~/dotfiles/.zshrc ~/.zshrc
 mkdir -p ~/.config
 ln -sf ~/dotfiles/nvim ~/.config/nvim
 
-# Symlink kitty
+# Symlink kitty config
 ln -sf ~/dotfiles/kitty ~/.config/kitty
 
 echo "Dotfiles installed!"
@@ -33,4 +33,15 @@ brew install eza
 
 echo "Fuzzy finding"
 brew install fzf
+
+echo "Matrix"
+brew install cmatrix
+echo "Btop"
+brew install btop
 $(brew --prefix)/opt/fzf/install
+
+git config --global merge.tool diffview
+git config --global mergetool.diffview.cmd \
+  'nvim -n -c "DiffviewOpen"'
+git config --global mergetool.prompt false
+git config --global mergetool.keepBackup false

@@ -2,8 +2,62 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = {
+      setup = {
+        ["*"] = function(server, opts)
+          if opts.on_attach then
+            local original_on_attach = opts.on_attach
+            opts.on_attach = function(client, bufnr)
+              -- Disable formatting capability for all LSP servers
+              client.server_capabilities.documentFormattingProvider = false
+              client.server_capabilities.documentRangeFormattingProvider = false
+              original_on_attach(client, bufnr)
+            end
+          else
+            opts.on_attach = function(client, bufnr)
+              -- Disable formatting capability for all LSP servers
+              client.server_capabilities.documentFormattingProvider = false
+              client.server_capabilities.documentRangeFormattingProvider = false
+            end
+          end
+        end,
+        vtsls = function(_, opts)
+          opts.settings.javascript =
+            vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
+        end,
+      },
       servers = {
         -- TypeScript/Angular
+        vtsls = {
+          settings = {
+            vtsls = {
+              autoUseWorkspaceTsdk = true,
+            },
+            typescript = {
+              updateImportsOnFileMove = { enabled = "always" },
+              suggest = {
+                completeFunctionCalls = true,
+              },
+              inlayHints = {
+                enumMemberValues = { enabled = true },
+                functionLikeReturnTypes = { enabled = true },
+                parameterNames = { enabled = "literals" },
+                parameterTypes = { enabled = true },
+                propertyDeclarationTypes = { enabled = true },
+                variableTypes = { enabled = false },
+              },
+            },
+          },
+        },
+        tsserver = {
+          globalPlugins = {
+            {
+              name = "@angular/language-server",
+              location = require("mason-registry").get_package("angular-language-server"):get_install_path()
+                .. "/node_modules/@angular/language-server",
+              enableForWorkspaceTypeScriptVersions = false,
+            },
+          },
+        },
         ts_ls = {
           settings = {
             typescript = {
@@ -25,6 +79,13 @@ return {
         -- HTML Language Server
         html = {
           filetypes = { "html", "htmlangular" },
+          settings = {
+            html = {
+              format = {
+                enable = false, -- Use ESLint for formatting
+              },
+            },
+          },
         },
         -- GraphQL
         graphql = {
@@ -49,5 +110,22 @@ return {
         },
       },
     },
+  },
+  {
+    "neovim/nvim-lspconfig",
+    opts = {},
+    config = function()
+      vim.lsp.config("gdscript", {
+        cmd = function(dispatchers)
+          return vim.lsp.rpc.connect("127.0.0.1", 6005)(dispatchers)
+        end,
+        filetypes = { "gdscript" },
+        root_dir = function(bufnr, on_dir)
+          local root = vim.fs.root(bufnr, { "project.godot", ".git" })
+          on_dir(root)
+        end,
+      })
+      vim.lsp.enable("gdscript")
+    end,
   },
 }

@@ -81,6 +81,11 @@ plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
+# Vi mode (must be after oh-my-zsh to avoid override)
+bindkey -v
+KEYTIMEOUT=1
+
+
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -148,12 +153,6 @@ list-zshrc-functions() {
     }
   ' ~/.zshrc
 }
-eval "$(starship init zsh)"
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# Starship prompt
-eval "$(starship init zsh)"
 
 # Better cd
 eval "$(zoxide init zsh)"
@@ -162,7 +161,6 @@ eval "$(zoxide init zsh)"
 alias ls='eza --icons'
 alias ll='eza -la --icons'
 alias cat='bat'
-alias z='zoxide'
 alias clr='clear'
 # fzf integration
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -178,8 +176,36 @@ SAVEHIST=10000
 
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# # Lazy load nvm
+# nvm() {
+#   unset -f nvm node npm npx nx
+#   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+#   nvm "$@"
+# }
+# node() { nvm; node "$@"; }
+# npm()  { nvm; npm "$@"; }
+# npx()  { nvm; npx "$@"; }
+# nx()   { nvm; nx "$@"; }
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 source ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)
+
+# With this:
+ng() {
+  unset -f ng
+  source <(command ng completion script)
+  ng "$@"
+}
+
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="/opt/homebrew/opt/node@24/bin:$PATH"
+
+# peon-ping quick controls
+alias peon="bash /Users/Michal.Materowski/.claude/hooks/peon-ping/peon.sh"
+[ -f /Users/Michal.Materowski/.claude/hooks/peon-ping/completions.bash ] && source /Users/Michal.Materowski/.claude/hooks/peon-ping/completions.bash
