@@ -17,3 +17,10 @@ vim.keymap.set("n", "<leader>yd", function()
   vim.fn.setreg("+", rel_path)
   vim.notify("Copied workspace-relative path: " .. rel_path)
 end, { desc = "Copy file path relative to Nx workspace root" })
+
+vim.keymap.set(
+  "n",
+  "<leader>c-",
+  ":w | !clang-tidy % --fix<CR>:e<CR>",
+  { desc = "C++: save and apply clang-tidy fixes" }
+)

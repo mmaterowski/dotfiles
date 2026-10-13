@@ -20,11 +20,26 @@ return {
             end
           end
         end,
+
         vtsls = function(_, opts)
           opts.settings.javascript =
             vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
         end,
+
+        gdscript = function(_, opts)
+          opts.cmd = function(dispatchers)
+            return vim.lsp.rpc.connect("127.0.0.1", 6005)(dispatchers)
+          end
+
+          opts.filetypes = { "gdscript" }
+
+          opts.root_dir = function(bufnr, on_dir)
+            local root = vim.fs.root(bufnr, { "project.godot", ".git" })
+            on_dir(root)
+          end
+        end,
       },
+
       servers = {
         -- TypeScript/Angular
         vtsls = {
@@ -48,6 +63,7 @@ return {
             },
           },
         },
+
         tsserver = {
           globalPlugins = {
             {
@@ -58,11 +74,12 @@ return {
             },
           },
         },
+
         ts_ls = {
           settings = {
             typescript = {
               format = {
-                enable = false, -- Use ESLint for formatting
+                enable = false,
               },
             },
             javascript = {
@@ -72,25 +89,35 @@ return {
             },
           },
         },
+
         -- Angular Language Server
         angularls = {
-          filetypes = { "typescript", "html", "typescriptreact", "typescript.tsx", "htmlangular" },
+          filetypes = {
+            "typescript",
+            "html",
+            "typescriptreact",
+            "typescript.tsx",
+            "htmlangular",
+          },
         },
+
         -- HTML Language Server
         html = {
           filetypes = { "html", "htmlangular" },
           settings = {
             html = {
               format = {
-                enable = false, -- Use ESLint for formatting
+                enable = false,
               },
             },
           },
         },
+
         -- GraphQL
         graphql = {
           filetypes = { "graphql", "gql" },
         },
+
         -- SCSS/CSS
         cssls = {
           settings = {
@@ -108,24 +135,10 @@ return {
             },
           },
         },
+
+        -- Godot
+        gdscript = {},
       },
     },
-  },
-  {
-    "neovim/nvim-lspconfig",
-    opts = {},
-    config = function()
-      vim.lsp.config("gdscript", {
-        cmd = function(dispatchers)
-          return vim.lsp.rpc.connect("127.0.0.1", 6005)(dispatchers)
-        end,
-        filetypes = { "gdscript" },
-        root_dir = function(bufnr, on_dir)
-          local root = vim.fs.root(bufnr, { "project.godot", ".git" })
-          on_dir(root)
-        end,
-      })
-      vim.lsp.enable("gdscript")
-    end,
   },
 }

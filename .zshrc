@@ -209,3 +209,4 @@ export PATH="/opt/homebrew/opt/node@24/bin:$PATH"
 # peon-ping quick controls
 alias peon="bash /Users/Michal.Materowski/.claude/hooks/peon-ping/peon.sh"
 [ -f /Users/Michal.Materowski/.claude/hooks/peon-ping/completions.bash ] && source /Users/Michal.Materowski/.claude/hooks/peon-ping/completions.bash
+export PATH="/opt/homebrew/opt/llvm/bin:$PATH"

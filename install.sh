@@ -40,6 +40,12 @@ echo "Btop"
 brew install btop
 $(brew --prefix)/opt/fzf/install
 
+echo "cpp tools"
+brew install cmake cppcheck bear cmake-docs ninja llvm
+
+echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >>~/.zshrc
+source ~/.zshrc
+
 git config --global merge.tool diffview
 git config --global mergetool.diffview.cmd \
   'nvim -n -c "DiffviewOpen"'
