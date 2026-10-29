@@ -1,3 +1,6 @@
+# Link Codex settings from this checkout, including when ~/.zshrc is a symlink.
+bash "${${(%):-%x}:A:h}/scripts/link-codex.sh"
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -103,6 +106,24 @@ KEYTIMEOUT=1
 # Compilation flags
 # export ARCHFLAGS="-arch $(uname -m)"
 
+
+ask() {
+  local q="$*"
+  local zshrc="${ZDOTDIR:-$HOME}/.zshrc"
+
+  {
+    printf '%s\n' \
+      "You are a concise zsh/terminal assistant." \
+      "Use the user's .zshrc below as the primary source for aliases, functions, and custom commands." \
+      "If something is not defined there, answer from general zsh/Linux/macOS knowledge and clearly say it is not from their config." \
+      "Explain risky commands and suggest a safe dry-run when relevant. Always provide at least 3 examples" \
+      "Format the answer in Markdown. Use fenced code blocks with language tags." \
+      "" \
+      "=== USER .zshrc ==="
+    cat "$zshrc"
+    printf '%s\n' "=== END USER .zshrc ===" "" "Question: $q"
+} | ollama run qwen2.5-coder:7b --nowordwrap | glow -s dark -
+}
 # Set personal aliases, overriding those provided by Oh My Zsh libs,
 # plugins, and themes. Aliases can be placed here, though Oh My Zsh
 # users are encouraged to define aliases within a top-level file in
@@ -210,3 +231,6 @@ export PATH="/opt/homebrew/opt/node@24/bin:$PATH"
 alias peon="bash /Users/Michal.Materowski/.claude/hooks/peon-ping/peon.sh"
 [ -f /Users/Michal.Materowski/.claude/hooks/peon-ping/completions.bash ] && source /Users/Michal.Materowski/.claude/hooks/peon-ping/completions.bash
 export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+
+# opencode
+export PATH=/Users/materac/.opencode/bin:$PATH

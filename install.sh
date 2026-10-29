@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Link Codex config while keeping credentials and runtime data local.
+bash "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/scripts/link-codex.sh"
+
 # Symlink zsh config
 ln -sf ~/dotfiles/.zshrc ~/.zshrc
 
@@ -45,6 +48,9 @@ brew install cmake cppcheck bear cmake-docs ninja llvm
 
 echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >>~/.zshrc
 source ~/.zshrc
+
+echo "markdown tools"
+brew install glow
 
 git config --global merge.tool diffview
 git config --global mergetool.diffview.cmd \
