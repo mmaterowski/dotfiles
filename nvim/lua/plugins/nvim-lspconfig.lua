@@ -21,11 +21,6 @@ return {
           end
         end,
 
-        vtsls = function(_, opts)
-          opts.settings.javascript =
-            vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
-        end,
-
         gdscript = function(_, opts)
           opts.cmd = function(dispatchers)
             return vim.lsp.rpc.connect("127.0.0.1", 6005)(dispatchers)

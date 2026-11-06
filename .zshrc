@@ -1,6 +1,3 @@
-# Link Codex settings from this checkout, including when ~/.zshrc is a symlink.
-bash "${${(%):-%x}:A:h}/scripts/link-codex.sh"
-
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -158,7 +155,7 @@ whisper-transcribe() {
 list-zshrc-functions() {
   awk '
     # Detect function start
-    /^([_a-zA-Z][_a-zA-Z0-9]*\(\)|function\s+[_a-zA-Z][_a-zA-Z0-9]*)\s*\{/ {
+    /^([_a-zA-Z][-_a-zA-Z0-9]*\(\)|function[[:space:]]+[_a-zA-Z][-_a-zA-Z0-9]*)[[:space:]]*\{/ {
       # get function name
       if ($1=="function") name=$2; else { name=$1; gsub(/\(\)/,"",name) }
       print "\n--- Function: " name " ---"
@@ -176,7 +173,7 @@ list-zshrc-functions() {
 }
 
 # Better cd
-eval "$(zoxide init zsh)"
+(( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
 
 # Aliases
 alias ls='eza --icons'
@@ -184,7 +181,9 @@ alias ll='eza -la --icons'
 alias cat='bat'
 alias clr='clear'
 # fzf integration
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+if (( $+commands[fzf] )); then
+  source <(fzf --zsh)
+fi
 
 # Set neovim as default editor
 export EDITOR=nvim
@@ -211,13 +210,9 @@ export NVM_DIR="$HOME/.nvm"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-source ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 
-# Load Angular CLI autocompletion.
-source <(ng completion script)
-
-# With this:
+# Load Angular CLI completion on first use.
 ng() {
   unset -f ng
   source <(command ng completion script)
@@ -225,12 +220,10 @@ ng() {
 }
 
 export PATH="$HOME/.local/bin:$PATH"
-export PATH="/opt/homebrew/opt/node@24/bin:$PATH"
 
 # peon-ping quick controls
-alias peon="bash /Users/Michal.Materowski/.claude/hooks/peon-ping/peon.sh"
-[ -f /Users/Michal.Materowski/.claude/hooks/peon-ping/completions.bash ] && source /Users/Michal.Materowski/.claude/hooks/peon-ping/completions.bash
+[ -f "$HOME/.claude/hooks/peon-ping/peon.sh" ] && alias peon="bash $HOME/.claude/hooks/peon-ping/peon.sh"
 export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 
 # opencode
-export PATH=/Users/materac/.opencode/bin:$PATH
+export PATH="$HOME/.opencode/bin:$PATH"

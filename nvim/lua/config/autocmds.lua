@@ -6,20 +6,6 @@
 --
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
--- Use EslintFixAll for TypeScript, JavaScript, and HTML files on save
-vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = { "*.js", "*.ts", "*.jsx", "*.tsx", "*.html" },
-  callback = function()
-    vim.lsp.buf.code_action({
-      apply = true,
-      context = {
-        only = { "source.fixAll.eslint" },
-        diagnostics = {},
-      },
-    })
-  end,
-})
-
 vim.filetype.add({
   extension = {
     gd = "gdscript",
@@ -29,12 +15,4 @@ vim.filetype.add({
     gdshader = "gdshader",
     shader = "gdshader",
   },
-})
-
-vim.api.nvim_create_autocmd("BufEnter", {
-  pattern = "*",
-  callback = function()
-    -- Do nothing, just prevent error
-    -- vim.cmd("silent! autocmd! FileExplorer *")
-  end,
 })

@@ -11,11 +11,6 @@ return {
     opts.highlight = opts.highlight or {}
     opts.highlight.enable = true
 
-    vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
-      pattern = { "*.component.html", "*.container.html" },
-      callback = function()
-        vim.treesitter.start(nil, "angular")
-      end,
-    })
+
   end,
 }

@@ -1,59 +1,40 @@
 #!/bin/bash
+set -eu
 
-# Link Codex config while keeping credentials and runtime data local.
-bash "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/scripts/link-codex.sh"
+repo="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+command -v brew >/dev/null || { echo 'Install Homebrew first: https://brew.sh/' >&2; exit 1; }
+brew bundle install --no-upgrade --file="$repo/Brewfile"
 
-# Symlink zsh config
-ln -sf ~/dotfiles/.zshrc ~/.zshrc
+zsh_dir="$HOME/.oh-my-zsh"
+custom="${ZSH_CUSTOM:-$zsh_dir/custom}"
+clone_if_missing() {
+  if [ ! -d "$2" ]; then
+    mkdir -p "$(dirname "$2")"
+    git clone --depth=1 "$1" "$2"
+  fi
+}
+clone_if_missing https://github.com/ohmyzsh/ohmyzsh.git "$zsh_dir"
+clone_if_missing https://github.com/romkatv/powerlevel10k.git "$custom/themes/powerlevel10k"
+clone_if_missing https://github.com/zsh-users/zsh-autosuggestions.git "$custom/plugins/zsh-autosuggestions"
+clone_if_missing https://github.com/zsh-users/zsh-syntax-highlighting.git "$custom/plugins/zsh-syntax-highlighting"
 
-# Symlink nvim config
-mkdir -p ~/.config
-ln -sf ~/dotfiles/nvim ~/.config/nvim
-
-# Symlink kitty config
-ln -sf ~/dotfiles/kitty ~/.config/kitty
-
-echo "Dotfiles installed!"
-
-# Install Oh My Zsh
-echo "Instaling Oh My Zsh"
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-# Powerlevel10k theme
-echo "Installing Powerlevel10k"
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
-
-# Autosuggestions
-echo "Autosuggestions"
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-
-# Syntax highlighting
-echo "Syntax highlighting"
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-
-echo "Install eza"
-brew install eza
-
-echo "Fuzzy finding"
-brew install fzf
-
-echo "Matrix"
-brew install cmatrix
-echo "Btop"
-brew install btop
-$(brew --prefix)/opt/fzf/install
-
-echo "cpp tools"
-brew install cmake cppcheck bear cmake-docs ninja llvm
-
-echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >>~/.zshrc
-source ~/.zshrc
-
-echo "markdown tools"
-brew install glow
-
-git config --global merge.tool diffview
-git config --global mergetool.diffview.cmd \
-  'nvim -n -c "DiffviewOpen"'
-git config --global mergetool.prompt false
-git config --global mergetool.keepBackup false
+backup_dir=''
+link_config() {
+  local source="$1" target="$2"
+  if [ -L "$target" ] && [ "$(readlink "$target")" = "$source" ]; then
+    return
+  fi
+  if [ -e "$target" ] || [ -L "$target" ]; then
+    if [ -z "$backup_dir" ]; then
+      backup_dir="$(mktemp -d "$HOME/.dotfiles-backup.XXXXXX")"
+      printf 'Backing up existing configuration to %s\n' "$backup_dir"
+    fi
+    mv "$target" "$backup_dir/$(basename "$target")"
+  fi
+  ln -s "$source" "$target"
+}
+mkdir -p "$HOME/.config"
+link_config "$repo/.zshrc" "$HOME/.zshrc"
+link_config "$repo/nvim" "$HOME/.config/nvim"
+link_config "$repo/kitty" "$HOME/.config/kitty"
+printf 'Dotfiles installed. Open a new shell.\n'
